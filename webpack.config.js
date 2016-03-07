@@ -1,26 +1,51 @@
+autoprefixer = require('autoprefixer');
 module.exports = {
-  module: {
-    loaders: [{
-      test: /\.css?$/,
-      loader: 'style!css?modules&localIdentName=[name]---[local]---[hash:base64:5]!postcss'
-    },
-	{
-      test: /\.js?$/,
-      exclude: /node_modules/,
-      loader: 'babel',
-      query: {
-        "presets": ["react", "es2015", "stage-0", "react-hmre"],
-        "plugins": [
-          ["transform-decorators-legacy"]
-        ]
-      }
-    },
-	{
-	  test: /\.png$/,
-      loader: 'url-loader?limit=8192'
-	}]
+  entry: './app/main.js',
+
+  output: {
+    filename: 'build/bundle.js',
   },
-  postcss: [
-	require('autoprefixer')
-  ]
+
+  module: {
+    loaders: [
+      { 
+        test: /\.js?$/, 
+        exclude: /node_modules/, 
+//        include: /react-leaflet/,
+        loader: 'babel-loader',
+        query: {
+          plugins: ['transform-decorators-legacy' ],
+          presets: ['es2015', 'react', 'stage-0'],
+        },
+      },
+
+      { 
+        test: /\.css$/, 
+        exclude: /node_modules/, 
+        loader: 'style-loader!css-loader' 
+      },
+
+      { 
+        test: /\.json$/,
+        loader: 'json-loader'
+      },
+      {
+    test: /\.png$/,
+    loader: "url-loader",
+    query: { mimetype: "image/png" }
+}
+
+//      { test:   /\.css$/, exclude: /node_modules/, loader: "style-loader!css-loader!postcss-loader"},
+    ],
+
+
+  },
+
+  postcss: function () {
+    return [autoprefixer];
+  },
+
+  resolve: {
+    extensions: ['', '.js', '.json', ],
+  },
 };
